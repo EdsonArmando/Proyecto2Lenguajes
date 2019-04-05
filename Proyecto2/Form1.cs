@@ -21,6 +21,8 @@ namespace Proyecto2
         private string textAnalizar;
         private ArrayList listaToken = new ArrayList();
         private int no = 1;
+        private string[] palabras = { "INSTRUCCIONES","VARIABLES","TEXTO", "Interlineado", "Nombre_archivo" ,"tamanio_letra","direccion_archivo","imagen","Numeros", "Linea_en_blanco","var","promedio"
+        ,"suma","asignar"};
         public Form1()
         {
 
@@ -69,8 +71,75 @@ namespace Proyecto2
                                 estado = 1;
                                 estadoInicial = estadoInicial - 1;
                                 break;
+                            case '(':
+                                token += cadena;
+                                estado = 1;
+                                estadoInicial = estadoInicial - 1;
+                                break;
+                            case ')':
+                                token += cadena;
+                                estado = 1;
+                                estadoInicial = estadoInicial - 1;
+                                break;
+                            case ';':
+                                token += cadena;
+                                estado = 1;
+                                estadoInicial = estadoInicial - 1;
+                                break;
+                            case ':':
+                                token += cadena;
+                                estado = 1;
+                                estadoInicial = estadoInicial - 1;
+                                break;
+                            case '=':
+                                token += cadena;
+                                estado = 1;
+                                estadoInicial = estadoInicial - 1;
+                                break;
+                            case ',':
+                                token += cadena;
+                                estado = 1;
+                                estadoInicial = estadoInicial - 1;
+                                break;
+                            case '[':
+                                token += cadena;
+                                estado = 1;
+                                estadoInicial = estadoInicial - 1;
+                                break;
+                            case ']':
+                                token += cadena;
+                                estado = 1;
+                                estadoInicial = estadoInicial - 1;
+                                break;
+                            case '"':
+                                token += cadena;
+                                estado = 3;
+                                break;
+                            case '*':
+                                token += cadena;
+                                estado = 6;
+                                break;
+                            case '+':
+                                token += cadena;
+                                estado = 8;
+                                break;
+                            case '/':
+                                token += cadena;
+                                estado = 10;
+                                break;
                             default:
-                                columna++;
+                                if (Char.IsLetter(cadena))
+                                {
+                                    token += cadena;
+                                    estado = 2;
+                                }
+                                else if (Char.IsDigit(cadena)) {
+                                    token += cadena;
+                                    estado = 5;
+                                }
+                                else  {
+                                    columna++;
+                                }
                                 break;
                         }
                         break;
@@ -87,9 +156,205 @@ namespace Proyecto2
                             token = "";
                             estado = 0;
                         }
+                        else if (token.Equals("]"))
+                        {
+                            verificarToken(token, fila, columna, "LLAVE CIERRE", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                        }
+                        else if (token.Equals("["))
+                        {
+                            verificarToken(token, fila, columna, "LLAVE APERTURA", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                        }
+                        else if (token.Equals("("))
+                        {
+                            verificarToken(token, fila, columna, "PARENTESIS APERTURA", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                        }
+                        else if (token.Equals(")"))
+                        {
+                            verificarToken(token, fila, columna, "PARENTESIS CIERRE", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                        }
+                        else if (token.Equals(";"))
+                        {
+                            verificarToken(token, fila, columna, "PUNTO Y COMA", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                        }
+                        else if (token.Equals(":"))
+                        {
+                            verificarToken(token, fila, columna, "DOS PUNTOS", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                        }
+                        else if (token.Equals(","))
+                        {
+                            verificarToken(token, fila, columna, "COMA", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                        }
+                        else if (token.Equals("="))
+                        {
+                            verificarToken(token, fila, columna, "IGUAL", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                        }
+                        break;
+                    case 2:
+                        if (Char.IsLetterOrDigit(cadena) | cadena=='_') {
+                            columna++;
+                            token += cadena;
+                            estado = 2;
+                        }
+                        else {
+                            analizarReservada(token, fila, columna, "RESERVADA", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                            estadoInicial = estadoInicial - 1;
+                        }
+                        break;
+                    case 3:
+                        if (cadena != '"')
+                        {
+                            columna++;
+                            token += cadena;
+                        }
+                        else if (cadena == '"')
+                        {
+                            estadoInicial = estadoInicial - 1;
+                            estado = 4;
+                        }
+                        break;
+                    case 4:
+                        verificarToken(token + "\"", fila, columna, "CADENA", estadoInicial);
+                        columna++;
+                        token = "";
+                        estado = 0;
+                        break;
+                    case 5:
+                        if (Char.IsDigit(cadena) | cadena == '.')
+                        {
+                            columna++;
+                            token += cadena;
+                            estado = 5;
+                        }
+                        else {
+                            verificarToken(token, fila, columna, "DIGITO", estadoInicial);
+                            columna++;
+                            token = "";
+                            estadoInicial = estadoInicial - 1;
+                            estado = 0;
+                        }
+                        break;
+                    case 6:
+                        if (token.Equals("*"))
+                        {
+                            verificarToken(token, fila, columna, "OP *", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 6;
+                        }
+                        if (cadena != '*')
+                        {
+                            columna++;
+                            token += cadena;
+                            estado = 6;
+                        }
+                        else if (cadena == '*')
+                        {
+                            estadoInicial = estadoInicial - 1;
+                            estado = 7;
+                        }
+                        break;
+                    case 7:
+                        verificarToken(token, fila, columna, "CADENA", estadoInicial);
+                        columna++;
+                        token = "";
+                        estado = 0;
+                        verificarToken(Char.ToString(cadena), fila, columna, "OP *", estadoInicial);
+                        columna++;
+                        break;
+                    case 8:
+                        if (token.Equals("+")) {
+                            verificarToken(token, fila, columna, "OP +", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 8;
+                        }
+                        if (cadena != '+')
+                        {
+                            columna++;
+                            token += cadena;
+                            estado = 8;
+                        }
+                        else if (cadena == '+')
+                        {
+                            estadoInicial = estadoInicial - 1;
+                            estado = 9;
+                        }
+                        break;
+                    case 9:
+                        verificarToken(token, fila, columna, "CADENA", estadoInicial);
+                        columna++;
+                        token = "";
+                        estado = 0;
+                        verificarToken(Char.ToString(cadena), fila, columna, "OP +", estadoInicial);
+                        columna++;
+                        break;
+                    case 10:
+                        if (cadena != '/')
+                        {
+                            columna++;
+                            token += cadena;
+                            estado = 10;
+                        }
+                        else if (cadena == '/')
+                        {
+                            estadoInicial = estadoInicial - 1;
+                            estado = 11;
+                        }
+                        break;
+                    case 11:
+                        columna++;
+                        verificarToken(token+"/", fila, columna, "COMENTARIO", estadoInicial);
+                        columna++;
+                        token = "";
+                        estado = 0;
                         break;
                 }
 
+            }
+        }
+        private void analizarReservada(string token, int fila, int columna, string tipo, int posicion) {
+            bool correcta = false;
+            string comparaPalabra = "";
+            for (int i=0;i<palabras.Length;i++) {
+                comparaPalabra= palabras[i];
+                if (comparaPalabra.ToLower().Equals(token.ToLower())) {
+                    correcta = true;
+                }
+            }
+            if (correcta == true)
+            {
+                verificarToken(token, fila, columna, "RESERVADA", posicion);
+            }
+            else {
+                verificarToken(token, fila, columna, "IDENTIFICADOR", posicion);
+                /*Error */
             }
         }
         private void verificarToken(string token, int fila, int columna, string tipo, int posicion)
@@ -99,6 +364,81 @@ namespace Proyecto2
                 no++;
             } else if (tipo.Equals("CORCHETE CIERRE")) {
                 listaToken.Add(new Token(no, 20, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("RESERVADA"))
+            {
+                listaToken.Add(new Token(no, 30, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("PARENTESIS APERTURA"))
+            {
+                listaToken.Add(new Token(no, 40, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("PARENTESIS CIERRE"))
+            {
+                listaToken.Add(new Token(no, 50, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("PUNTO Y COMA"))
+            {
+                listaToken.Add(new Token(no, 60, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("DOS PUNTOS"))
+            {
+                listaToken.Add(new Token(no, 70, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("COMA"))
+            {
+                listaToken.Add(new Token(no, 80, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("IGUAL"))
+            {
+                listaToken.Add(new Token(no, 90, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("CADENA"))
+            {
+                listaToken.Add(new Token(no, 100, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("IDENTIFICADOR"))
+            {
+                listaToken.Add(new Token(no, 110, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("DIGITO"))
+            {
+                listaToken.Add(new Token(no, 120, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("LLAVE APERTURA"))
+            {
+                listaToken.Add(new Token(no, 130, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("LLAVE CIERRE"))
+            {
+                listaToken.Add(new Token(no, 140, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("OP +"))
+            {
+                listaToken.Add(new Token(no, 140, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("OP *"))
+            {
+                listaToken.Add(new Token(no, 140, token, tipo, fila, columna, posicion));
+                no++;
+            }
+            else if (tipo.Equals("COMENTARIO"))
+            {
+                listaToken.Add(new Token(no, 140, token, tipo, fila, columna, posicion));
                 no++;
             }
         }
@@ -128,7 +468,7 @@ namespace Proyecto2
 
             // Creamos una tabla que contendrá el nombre, apellido y país
             // de nuestros visitante.
-            iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
+            iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 8, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
             PdfPTable tblPrueba = new PdfPTable(6);
             tblPrueba.WidthPercentage = 100;
 
@@ -143,7 +483,7 @@ namespace Proyecto2
 
             PdfPCell lexema = new PdfPCell(new Phrase("Lexema", _standardFont));
             lexema.BorderWidth = 0;
-            lexema.BorderWidthBottom = 0.40f;
+            lexema.BorderWidthBottom = 0.60f;
 
             PdfPCell tipo = new PdfPCell(new Phrase("Tipo", _standardFont));
             tipo.BorderWidth = 0;
