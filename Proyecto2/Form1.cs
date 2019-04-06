@@ -19,10 +19,12 @@ namespace Proyecto2
     public partial class Form1 : Form
     {
         private string textAnalizar;
-        private ArrayList listaToken = new ArrayList();
+        public static ArrayList listaToken = new ArrayList();
+        public static List<int> listId = new List<int>();
         private int no = 1;
         private string[] palabras = { "INSTRUCCIONES","VARIABLES","TEXTO", "Interlineado", "Nombre_archivo" ,"tamanio_letra","direccion_archivo","imagen","Numeros", "Linea_en_blanco","var","promedio"
         ,"suma","asignar"};
+        public List<int> ListaToken { get => listId; set => listId = value; }
         public Form1()
         {
 
@@ -32,6 +34,7 @@ namespace Proyecto2
         private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             analizadorLexico();
+            AnalizadorSintactico.inicarAnalisis();
             generarPDF();
         }
         private void analizadorLexico() {
@@ -361,84 +364,101 @@ namespace Proyecto2
         {
             if (tipo.Equals("CORCHETE APERTURA")) {
                 listaToken.Add(new Token(no, 10, token, tipo, fila, columna, posicion));
+                listId.Add(10);
                 no++;
             } else if (tipo.Equals("CORCHETE CIERRE")) {
                 listaToken.Add(new Token(no, 20, token, tipo, fila, columna, posicion));
+                listId.Add(20);
                 no++;
             }
             else if (tipo.Equals("RESERVADA"))
             {
                 listaToken.Add(new Token(no, 30, token, tipo, fila, columna, posicion));
+                listId.Add(30);
                 no++;
             }
             else if (tipo.Equals("PARENTESIS APERTURA"))
             {
                 listaToken.Add(new Token(no, 40, token, tipo, fila, columna, posicion));
+                listId.Add(40);
                 no++;
             }
             else if (tipo.Equals("PARENTESIS CIERRE"))
             {
                 listaToken.Add(new Token(no, 50, token, tipo, fila, columna, posicion));
+                listId.Add(50);
                 no++;
             }
             else if (tipo.Equals("PUNTO Y COMA"))
             {
                 listaToken.Add(new Token(no, 60, token, tipo, fila, columna, posicion));
+                listId.Add(60);
                 no++;
             }
             else if (tipo.Equals("DOS PUNTOS"))
             {
                 listaToken.Add(new Token(no, 70, token, tipo, fila, columna, posicion));
+                listId.Add(70);
                 no++;
             }
             else if (tipo.Equals("COMA"))
             {
                 listaToken.Add(new Token(no, 80, token, tipo, fila, columna, posicion));
+                listId.Add(80);
                 no++;
             }
             else if (tipo.Equals("IGUAL"))
             {
                 listaToken.Add(new Token(no, 90, token, tipo, fila, columna, posicion));
+                listId.Add(90);
                 no++;
             }
             else if (tipo.Equals("CADENA"))
             {
                 listaToken.Add(new Token(no, 100, token, tipo, fila, columna, posicion));
+                listId.Add(100);
                 no++;
             }
             else if (tipo.Equals("IDENTIFICADOR"))
             {
                 listaToken.Add(new Token(no, 110, token, tipo, fila, columna, posicion));
+                listId.Add(110);
                 no++;
             }
             else if (tipo.Equals("DIGITO"))
             {
                 listaToken.Add(new Token(no, 120, token, tipo, fila, columna, posicion));
+                listId.Add(120);
                 no++;
             }
             else if (tipo.Equals("LLAVE APERTURA"))
             {
                 listaToken.Add(new Token(no, 130, token, tipo, fila, columna, posicion));
+                listId.Add(130);
                 no++;
             }
             else if (tipo.Equals("LLAVE CIERRE"))
             {
                 listaToken.Add(new Token(no, 140, token, tipo, fila, columna, posicion));
+                listId.Add(140);
                 no++;
             }
             else if (tipo.Equals("OP +"))
             {
-                listaToken.Add(new Token(no, 140, token, tipo, fila, columna, posicion));
+                listaToken.Add(new Token(no, 150, token, tipo, fila, columna, posicion));
+                listId.Add(150);
                 no++;
             }
             else if (tipo.Equals("OP *"))
             {
-                listaToken.Add(new Token(no, 140, token, tipo, fila, columna, posicion));
+                listaToken.Add(new Token(no, 160, token, tipo, fila, columna, posicion));
+                listId.Add(160);
                 no++;
             }
             else if (tipo.Equals("COMENTARIO"))
             {
-                listaToken.Add(new Token(no, 140, token, tipo, fila, columna, posicion));
+                listaToken.Add(new Token(no, 170, token, tipo, fila, columna, posicion));
+                listId.Add(170);
                 no++;
             }
         }
@@ -538,6 +558,7 @@ namespace Proyecto2
             doc.Close();
             writer.Close();
             Process.Start(@"c:\Proyecto1\TablaSimbolos.pdf");
+            //AnalizadorSintactico.recorrerLista();
         }
     }
 }
