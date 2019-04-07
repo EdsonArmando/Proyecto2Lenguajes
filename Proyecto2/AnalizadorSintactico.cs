@@ -46,45 +46,79 @@ namespace Proyecto2
         public  void iniciarAnalisis() {
             preanalisis = listaToken[posicionAnalizar];
             posicionAnalizar++;
-            bloqueInstr();
+            bloqueInstrs();
         }
-        private  void bloqueP() {
-            bloqueInstr();
-            preanalisis = 30;
-        }
-        private  void bloqueInstr() {
+  
+        private void bloqueInstrs() {
             switch (preanalisis) {
                 case 30:
                     parea(30);
-                    bloqueInstr();
-                    bloqueP();
+                    instrs();
+                    bloqueInstrs();
                     break;
+            }
+        }
+
+        private void instrs()
+        {
+            switch (preanalisis) {
                 case 10:
                     parea(10);
-                    llamada();
+                    bloque();
                     parea(20);
                     break;
-                default:
-                    break;
             }
         }
-        public  void llamada() {
-            switch (preanalisis) {
-                case 110:
-                    parea(110);
-                    llamada();
-                    break;
-                case 40:
+
+        private void bloque()
+        {
+            switch (preanalisis)
+            {
+                case 30:
+                    parea(30);
                     parea(40);
-                    parea(110);
+                    expre();
                     parea(50);
                     parea(60);
+                    bloque();
+                    break;
+                case 110:
+                    Console.WriteLine("Variables correcta");
+                    parea(110);
+                    parea(70);
+                    parea(30);
+                    parea(90);
+                    expre();
+                    parea(60);
+                    bloque();
                     break;
                 default:
-                    //inicarAnalisis(); 
+                 
                     break;
             }
         }
+        private void expre()
+        {
+            switch (preanalisis)
+            {
+                case 110:
+                    Console.WriteLine("Hola1");
+                    parea(110);
+                    break;
+                case 100:
+                    Console.WriteLine("Hola2");
+                    parea(100);
+                    break;
+                case 120:
+                    Console.WriteLine("Hola3");
+                    parea(120);
+                    break;
+                default:
+                    reportarError();
+                    break;
+            }
+        }
+
         public void limpiarVariables() {
             listaToken.Clear();
             cont = 1;

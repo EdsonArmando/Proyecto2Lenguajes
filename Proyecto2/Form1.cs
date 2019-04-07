@@ -24,7 +24,7 @@ namespace Proyecto2
         public static List<int> listId = new List<int>();
         private int no = 1;
         private string[] palabras = { "INSTRUCCIONES","VARIABLES","TEXTO", "Interlineado", "Nombre_archivo" ,"tamanio_letra","direccion_archivo","imagen","Numeros", "Linea_en_blanco","var","promedio"
-        ,"suma","asignar"};
+        ,"suma","asignar","Cadena","Entero"};
         public List<int> ListaToken { get => listId; set => listId = value; }
         public Form1()
         {
