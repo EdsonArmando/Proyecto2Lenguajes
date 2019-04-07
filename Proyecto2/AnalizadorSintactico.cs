@@ -99,18 +99,41 @@ namespace Proyecto2
         }
         private void expre()
         {
+           paramss();
+        }
+
+        private void paramss()
+        {
+            param();
+            paramPrima();
+        }
+
+        private void paramPrima()
+        {
+            switch (preanalisis) {
+                case 80:
+                    parea(80);
+                    param();
+                    paramPrima();
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void param()
+        {
             switch (preanalisis)
             {
                 case 110:
-                    Console.WriteLine("Hola1");
+                    //Console.WriteLine("Hola1");
                     parea(110);
                     break;
                 case 100:
-                    Console.WriteLine("Hola2");
+                    //Console.WriteLine("Hola2");
                     parea(100);
                     break;
                 case 120:
-                    Console.WriteLine("Hola3");
+                    //Console.WriteLine("Hola3");
                     parea(120);
                     break;
                 default:
