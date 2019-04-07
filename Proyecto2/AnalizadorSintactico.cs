@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +9,13 @@ namespace Proyecto2
 {
     class AnalizadorSintactico
     {
-        private static List<int> listaToken = Form1.listId;
-        private static int cont = 1;
-        public static  int preanalisis;
-        private static int posicionAnalizar = 0;
 
-        private static void parea(int token) {
+        private  List<int> listaToken = Form1.listId;
+        private  int cont = 1;
+        public   int preanalisis;
+        private  int posicionAnalizar = 0;
+
+        private  void parea(int token) {
             if (token == preanalisis)
             {
                 if (cont < listaToken.Count)
@@ -31,23 +32,43 @@ namespace Proyecto2
             }
         }
 
-        private static void reportarError()
+        private  void reportarError()
         {
             Console.WriteLine("Error + " + preanalisis);
         }
 
-        public static int nextToken()
+        public  int nextToken()
         {
             int id = listaToken[cont];
             cont++;
             return id;
         }
-        public static void inicarAnalisis() {
+        public  void iniciarAnalisis() {
             preanalisis = listaToken[posicionAnalizar];
             posicionAnalizar++;
-            llamada();
+            bloqueInstr();
         }
-        public static void llamada() {
+        private  void bloqueP() {
+            bloqueInstr();
+            preanalisis = 30;
+        }
+        private  void bloqueInstr() {
+            switch (preanalisis) {
+                case 30:
+                    parea(30);
+                    bloqueInstr();
+                    bloqueP();
+                    break;
+                case 10:
+                    parea(10);
+                    llamada();
+                    parea(20);
+                    break;
+                default:
+                    break;
+            }
+        }
+        public  void llamada() {
             switch (preanalisis) {
                 case 110:
                     parea(110);
@@ -60,9 +81,14 @@ namespace Proyecto2
                     parea(60);
                     break;
                 default:
-                    inicarAnalisis(); 
+                    //inicarAnalisis(); 
                     break;
             }
         }
+        public void limpiarVariables() {
+            listaToken.Clear();
+            cont = 1;
+            posicionAnalizar = 0;
+    }
     }
 }

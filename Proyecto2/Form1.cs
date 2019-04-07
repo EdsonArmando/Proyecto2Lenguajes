@@ -18,6 +18,7 @@ namespace Proyecto2
 {
     public partial class Form1 : Form
     {
+        AnalizadorSintactico an = new AnalizadorSintactico();
         private string textAnalizar;
         public static ArrayList listaToken = new ArrayList();
         public static List<int> listId = new List<int>();
@@ -33,9 +34,13 @@ namespace Proyecto2
 
         private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            no = 1;
+            listaToken.Clear();
             analizadorLexico();
-            AnalizadorSintactico.inicarAnalisis();
+            an.iniciarAnalisis();
+            an.limpiarVariables();
             generarPDF();
+            listId.Clear();
         }
         private void analizadorLexico() {
             textAnalizar = idTexto.Text;
@@ -463,6 +468,7 @@ namespace Proyecto2
             }
         }
         private void generarPDF() {
+           
             Document doc = new Document();
             PdfWriter writer = PdfWriter.GetInstance(doc,
                             new FileStream(Path.Combine(@"c:\Proyecto1\", "TablaSimbolos.pdf"), FileMode.Create));
@@ -557,6 +563,7 @@ namespace Proyecto2
             doc.Add(tblPrueba);
             doc.Close();
             writer.Close();
+            listaToken.Clear();
             Process.Start(@"c:\Proyecto1\TablaSimbolos.pdf");
             //AnalizadorSintactico.recorrerLista();
         }
