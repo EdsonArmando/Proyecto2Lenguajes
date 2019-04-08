@@ -21,10 +21,12 @@ namespace Proyecto2
         AnalizadorSintactico an = new AnalizadorSintactico();
         private string textAnalizar;
         public static ArrayList listaToken = new ArrayList();
+        public static ArrayList listaErrores = new ArrayList();
         public static List<int> listId = new List<int>();
         private int no = 1;
-        private int contErrorSintactico = 0;
+        private int contErrorSintactico;
         private int contErroLexico = 0;
+        public static int contError = 1;
         private string[] palabras = { "INSTRUCCIONES","VARIABLES","TEXTO", "Interlineado", "Nombre_archivo" ,"tamanio_letra","direccion_archivo","imagen","Numeros", "Linea_en_blanco","var","promedio"
         ,"suma","asignar","Cadena","Entero"};
         public List<int> ListaToken { get => listId; set => listId = value; }
@@ -39,21 +41,13 @@ namespace Proyecto2
             no = 1;
             listaToken.Clear();
             analizadorLexico();
-            if (contErroLexico==0) {
-                an.iniciarAnalisis();
-                contErrorSintactico = AnalizadorSintactico.contErrorSintactico;
+            an.iniciarAnalisis();
+            contErrorSintactico = AnalizadorSintactico.contErrorSintactico;
+            if (contErrorSintactico > 0) {
+                MessageBox.Show("Hay errores sintacticos");
             }
-            else if (contErrorSintactico > 0 && contErroLexico == 0) {
-                MessageBox.Show("Hay Errores Sintácticos");
-                generarPDF();
-            } else if (contErroLexico > 0 && contErrorSintactico == 0) {
-                MessageBox.Show("Hay Errores Léxicos");
-                generarPDF();
-            }
-            if (contErrorSintactico == 0 && contErroLexico == 0)
-            {
-                generarPDF();
-            }
+            generarPDF();
+            generarPdfErrores();
             an.limpiarVariables();
             listId.Clear();
         }
@@ -161,7 +155,7 @@ namespace Proyecto2
                                     token += cadena;
                                     estado = 5;
                                 }
-                                else  {
+                                else {
                                     columna++;
                                     token += cadena;
                                     estado = 12;
@@ -248,7 +242,7 @@ namespace Proyecto2
                         }
                         break;
                     case 2:
-                        if (Char.IsLetterOrDigit(cadena) | cadena=='_') {
+                        if (Char.IsLetterOrDigit(cadena) | cadena == '_') {
                             columna++;
                             token += cadena;
                             estado = 2;
@@ -351,7 +345,7 @@ namespace Proyecto2
                         break;
                     case 11:
                         columna++;
-                        verificarToken(token+"/", fila, columna, "COMENTARIO", estadoInicial);
+                        verificarToken(token + "/", fila, columna, "COMENTARIO", estadoInicial);
                         columna++;
                         token = "";
                         estado = 0;
@@ -370,14 +364,15 @@ namespace Proyecto2
 
         private void reportarError(string token, int fila, int columna, string tipo, int posicion)
         {
-            Console.WriteLine(token);
+            listaErrores.Add(new ErrorToken(contError, token, "ERROR LEXICO", "ELEMENTO LEXICO DESNOCIDO", fila, columna, posicion));
+            contError++;
         }
 
         private void analizarReservada(string token, int fila, int columna, string tipo, int posicion) {
             bool correcta = false;
             string comparaPalabra = "";
-            for (int i=0;i<palabras.Length;i++) {
-                comparaPalabra= palabras[i];
+            for (int i = 0; i < palabras.Length; i++) {
+                comparaPalabra = palabras[i];
                 if (comparaPalabra.ToLower().Equals(token.ToLower())) {
                     correcta = true;
                 }
@@ -415,7 +410,7 @@ namespace Proyecto2
                     listId.Add(30);
                     no++;
                 }
-               
+
             }
             else if (tipo.Equals("PARENTESIS APERTURA"))
             {
@@ -508,8 +503,110 @@ namespace Proyecto2
                 no++;
             }
         }
+        private void generarPdfErrores() {
+
+            Document doc = new Document();
+            PdfWriter writer = PdfWriter.GetInstance(doc,
+                            new FileStream(Path.Combine(@"c:\Proyecto1\", "TablaErrores.pdf"), FileMode.Create));
+            doc.Open();
+            Paragraph titulo = new Paragraph("TABLA SIMBOLOS");
+            titulo.Alignment = Element.ALIGN_CENTER;
+            iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(@"c:\Proyecto1\logo.png");
+
+            logo.Alignment = 6;
+            doc.Add(logo);
+            doc.Add(new Paragraph("Universidad de San Carlos de Guatemala"));
+            doc.Add(new Paragraph("Facultad de Ingeniería"));
+            doc.Add(new Paragraph("Escuela de Ciencias y Sistemas"));
+            doc.Add(new Paragraph("Lenguajes Formales y de Programación"));
+            doc.Add(new Paragraph("Catedrática: Inga Damaris Campos"));
+            doc.Add(new Paragraph("Aux.: Aylin Aroche"));
+            doc.Add(new Paragraph("Sección:  A-"));
+            doc.Add(new Paragraph("\n"));
+            doc.Add(new Paragraph(titulo));
+            doc.Add(Chunk.NEWLINE);
+            /*Tabla tokens*/
+
+
+            // Creamos una tabla que contendrá el nombre, apellido y país
+            // de nuestros visitante.
+            iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 8, iTextSharp.text.Font.BOLD, BaseColor.BLACK);
+            PdfPTable tblPrueba = new PdfPTable(6);
+            tblPrueba.WidthPercentage = 100;
+
+            // Configuramos el título de las columnas de la tabla
+            PdfPCell no = new PdfPCell(new Phrase("No", _standardFont));
+            no.BorderWidth = 0;
+            no.BorderWidthBottom = 0.40f;
+
+            PdfPCell idNo = new PdfPCell(new Phrase("IdToken", _standardFont));
+            idNo.BorderWidth = 0;
+            idNo.BorderWidthBottom = 0.40f;
+
+            PdfPCell lexema = new PdfPCell(new Phrase("Tipo", _standardFont));
+            lexema.BorderWidth = 0;
+            lexema.BorderWidthBottom = 0.60f;
+
+            PdfPCell tipo = new PdfPCell(new Phrase("Lexema", _standardFont));
+            tipo.BorderWidth = 0;
+            tipo.BorderWidthBottom = 0.40f;
+
+            PdfPCell fila = new PdfPCell(new Phrase("Fila", _standardFont));
+            fila.BorderWidth = 0;
+            fila.BorderWidthBottom = 0.40f;
+
+            PdfPCell columna = new PdfPCell(new Phrase("Columna", _standardFont));
+            columna.BorderWidth = 0;
+            columna.BorderWidthBottom = 0.40f;
+
+            // Añadimos las celdas a la tabla
+            tblPrueba.AddCell(no);
+            tblPrueba.AddCell(idNo);
+            tblPrueba.AddCell(lexema);
+            tblPrueba.AddCell(tipo);
+            tblPrueba.AddCell(fila);
+            tblPrueba.AddCell(columna);
+
+            // Llenamos la tabla con información
+            foreach (ErrorToken t in listaErrores)
+            {
+                no = new PdfPCell(new Phrase(Convert.ToString(t.No), _standardFont));
+                no.BorderWidth = 0;
+
+                idNo = new PdfPCell(new Phrase(Convert.ToString(t.Tokens), _standardFont));
+                idNo.BorderWidth = 0;
+
+                lexema = new PdfPCell(new Phrase(t.Lexema, _standardFont));
+                lexema.BorderWidth = 0;
+
+                tipo = new PdfPCell(new Phrase(t.Tipo, _standardFont));
+                tipo.BorderWidth = 0;
+
+                fila = new PdfPCell(new Phrase(Convert.ToString(t.Fila), _standardFont));
+                fila.BorderWidth = 0;
+
+                columna = new PdfPCell(new Phrase(Convert.ToString(t.Columna), _standardFont));
+                columna.BorderWidth = 0;
+
+                // Añadimos las celdas a la tabla
+                tblPrueba.AddCell(no);
+                tblPrueba.AddCell(idNo);
+                tblPrueba.AddCell(lexema);
+                tblPrueba.AddCell(tipo);
+                tblPrueba.AddCell(fila);
+                tblPrueba.AddCell(columna);
+
+            }
+            doc.Add(tblPrueba);
+            doc.Close();
+            writer.Close();
+            listaErrores.Clear();
+            Process.Start(@"c:\Proyecto1\TablaErrores.pdf");
+            //AnalizadorSintactico.recorrerLista();
+        }
+
         private void generarPDF() {
-           
+
             Document doc = new Document();
             PdfWriter writer = PdfWriter.GetInstance(doc,
                             new FileStream(Path.Combine(@"c:\Proyecto1\", "TablaSimbolos.pdf"), FileMode.Create));
@@ -517,7 +614,7 @@ namespace Proyecto2
             Paragraph titulo = new Paragraph("TABLA SIMBOLOS");
             titulo.Alignment = Element.ALIGN_CENTER;
             iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(@"c:\Proyecto1\logo.png");
-           
+
             logo.Alignment = 6;
             doc.Add(logo);
             doc.Add(new Paragraph("Universidad de San Carlos de Guatemala"));
@@ -604,9 +701,25 @@ namespace Proyecto2
             doc.Add(tblPrueba);
             doc.Close();
             writer.Close();
-            listaToken.Clear();
+            
             Process.Start(@"c:\Proyecto1\TablaSimbolos.pdf");
             //AnalizadorSintactico.recorrerLista();
         }
+
+        public static int devolverFila(int pos)
+        {
+            int fila = 0;
+            Token t = (Token)listaToken[pos];
+           fila = t.Fila;
+            return fila;
+        }
+        public static int devolverColumna(int pos)
+        {
+            int fila = 0;
+            Token t = (Token)listaToken[pos];
+            fila = t.Columna;
+            return fila;
+        }
     }
 }
+

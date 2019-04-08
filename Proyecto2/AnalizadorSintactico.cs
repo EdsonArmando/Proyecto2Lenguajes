@@ -15,7 +15,8 @@ namespace Proyecto2
         public int preanalisis;
         private int posicionAnalizar = 0;
         public static int contErrorSintactico = 0;
-
+        public static int contError = Form1.contError;
+        public static ArrayList listaErrores = Form1.listaErrores;
         private void parea(int token) {
             if (token == preanalisis)
             {
@@ -35,10 +36,84 @@ namespace Proyecto2
 
         private void reportarError()
         {
+            
+            listaErrores.Add(new ErrorToken(contError, devolverToken(preanalisis), "ERROR Sintactico", "ERROR DE SINTAXIS", Form1.devolverFila(cont), Form1.devolverColumna(cont),0));
             contErrorSintactico++;
-            Console.WriteLine("Error + " + preanalisis);
+            contError++;
         }
-
+        private string devolverToken(int id) {
+            string token = "";
+            if (id == 10) {
+                token = "{";
+            } else if (id == 20) {
+                token = "}";
+            }
+            else if (id == 30 | id==90)
+            {
+                token = "Reservada";
+            }
+            else if (id == 40)
+            {
+                token = "(";
+            }
+            else if (id == 50)
+            {
+                token = ")";
+            }
+            else if (id == 60)
+            {
+                token = ";";
+            }
+            else if (id == 70)
+            {
+                token = ":";
+            }
+            else if (id == 80)
+            {
+                token = ",";
+            }
+            else if (id == 90)
+            {
+                token = "=";
+            }
+            else if (id == 100)
+            {
+                token = "Cadena";
+            }
+            else if (id == 110)
+            {
+                token = "Identificador";
+            }
+            else if (id == 120)
+            {
+                token = "Digito";
+            }
+            else if (id == 130)
+            {
+                token = "[";
+            }
+            else if (id == 140)
+            {
+                token = "]";
+            }
+            else if (id == 150)
+            {
+                token = "+";
+            }
+            else if (id == 150)
+            {
+                token = "*";
+            }
+            else if (id == 170)
+            {
+                token = "Comentario";
+            }
+            else if (id == 180)
+            {
+                token = "/";
+            }
+            return token;
+        }
         public int nextToken()
         {
             int id = listaToken[cont];
@@ -47,7 +122,7 @@ namespace Proyecto2
         }
         public void iniciarAnalisis() {
             preanalisis = listaToken[posicionAnalizar];
-            posicionAnalizar++;
+            //posicionAnalizar++;
             bloqueInstrs();
         }
 
@@ -68,6 +143,9 @@ namespace Proyecto2
                     parea(10);
                     bloque();
                     parea(20);
+                    break;
+                default:
+                    reportarError();
                     break;
             }
         }
