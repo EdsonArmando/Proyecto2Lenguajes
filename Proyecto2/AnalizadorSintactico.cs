@@ -10,12 +10,13 @@ namespace Proyecto2
     class AnalizadorSintactico
     {
 
-        private  List<int> listaToken = Form1.listId;
-        private  int cont = 1;
-        public   int preanalisis;
-        private  int posicionAnalizar = 0;
+        private List<int> listaToken = Form1.listId;
+        private int cont = 1;
+        public int preanalisis;
+        private int posicionAnalizar = 0;
+        public static int contErrorSintactico = 0;
 
-        private  void parea(int token) {
+        private void parea(int token) {
             if (token == preanalisis)
             {
                 if (cont < listaToken.Count)
@@ -25,30 +26,31 @@ namespace Proyecto2
                 else {
                     Console.WriteLine("Se termino el analisis");
                 }
-               
+
             }
             else {
                 reportarError();
             }
         }
 
-        private  void reportarError()
+        private void reportarError()
         {
+            contErrorSintactico++;
             Console.WriteLine("Error + " + preanalisis);
         }
 
-        public  int nextToken()
+        public int nextToken()
         {
             int id = listaToken[cont];
             cont++;
             return id;
         }
-        public  void iniciarAnalisis() {
+        public void iniciarAnalisis() {
             preanalisis = listaToken[posicionAnalizar];
             posicionAnalizar++;
             bloqueInstrs();
         }
-  
+
         private void bloqueInstrs() {
             switch (preanalisis) {
                 case 30:
@@ -76,27 +78,110 @@ namespace Proyecto2
             {
                 case 30:
                     parea(30);
-                    parea(40);
-                    expre();
-                    parea(50);
-                    parea(60);
+                    llamada();
                     bloque();
                     break;
                 case 110:
-                    Console.WriteLine("Variables correcta");
-                    parea(110);
+                    //Console.WriteLine("Variables correcta");
+                    variable();
                     parea(70);
                     parea(30);
-                    parea(90);
-                    expre();
+                    declaracion();
+                    parea(60);
+                    bloque();
+                    break;
+                case 130:
+                    parea(130);
+                    inicio();
+                    param();
+                    inicio();
+                    parea(140);
+                    parea(60);
+                    bloque();
+                    break;
+                case 180:
+                    parea(180);
+                    parea(160);
+                    param();
+                    parea(160);
+                    parea(180);
+                    bloque();
+                    break;
+                case 100:
+                    parea(100);
+                    bloque();
+                    break;
+                case 190:
+                    parea(190);
                     parea(60);
                     bloque();
                     break;
                 default:
-                 
+
                     break;
             }
         }
+
+        private void llamada()
+        {
+            switch (preanalisis) {
+                case 40:
+                    parea(40);
+                    expre();
+                    parea(50);
+                    parea(60);
+                    break;
+                case 130:
+                    parea(130);
+                    param();
+                    parea(140);
+                    break;
+            }
+        }
+    
+
+        private void inicio()
+        {
+            switch (preanalisis) {
+                case 150:
+                    parea(150);
+                    break;
+                case 160:
+                    parea(160);
+                    break;
+            }
+        }
+
+        private void declaracion()
+        {
+            switch (preanalisis) {
+                case 90:
+                    parea(90);
+                    param();
+                    break;
+            }
+        }
+
+        private void variable()
+        {
+            param();
+            variablePrima();
+        }
+
+        private void variablePrima()
+        {
+            switch (preanalisis)
+            {
+                case 80:
+                    parea(80);
+                    param();
+                    variablePrima();
+                    break;
+                default:
+                    break;
+            }
+        }
+
         private void expre()
         {
            paramss();
@@ -146,6 +231,7 @@ namespace Proyecto2
             listaToken.Clear();
             cont = 1;
             posicionAnalizar = 0;
-    }
+            contErrorSintactico = 0;
+        }
     }
 }

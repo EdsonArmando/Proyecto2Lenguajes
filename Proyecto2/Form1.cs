@@ -23,6 +23,8 @@ namespace Proyecto2
         public static ArrayList listaToken = new ArrayList();
         public static List<int> listId = new List<int>();
         private int no = 1;
+        private int contErrorSintactico = 0;
+        private int contErroLexico = 0;
         private string[] palabras = { "INSTRUCCIONES","VARIABLES","TEXTO", "Interlineado", "Nombre_archivo" ,"tamanio_letra","direccion_archivo","imagen","Numeros", "Linea_en_blanco","var","promedio"
         ,"suma","asignar","Cadena","Entero"};
         public List<int> ListaToken { get => listId; set => listId = value; }
@@ -37,9 +39,22 @@ namespace Proyecto2
             no = 1;
             listaToken.Clear();
             analizadorLexico();
-            an.iniciarAnalisis();
+            if (contErroLexico==0) {
+                an.iniciarAnalisis();
+                contErrorSintactico = AnalizadorSintactico.contErrorSintactico;
+            }
+            else if (contErrorSintactico > 0 && contErroLexico == 0) {
+                MessageBox.Show("Hay Errores Sintácticos");
+                generarPDF();
+            } else if (contErroLexico > 0 && contErrorSintactico == 0) {
+                MessageBox.Show("Hay Errores Léxicos");
+                generarPDF();
+            }
+            if (contErrorSintactico == 0 && contErroLexico == 0)
+            {
+                generarPDF();
+            }
             an.limpiarVariables();
-            generarPDF();
             listId.Clear();
         }
         private void analizadorLexico() {
@@ -133,7 +148,8 @@ namespace Proyecto2
                                 break;
                             case '/':
                                 token += cadena;
-                                estado = 10;
+                                estado = 1;
+                                estadoInicial = estadoInicial - 1;
                                 break;
                             default:
                                 if (Char.IsLetter(cadena))
@@ -147,6 +163,9 @@ namespace Proyecto2
                                 }
                                 else  {
                                     columna++;
+                                    token += cadena;
+                                    estado = 12;
+                                    estadoInicial = estadoInicial - 1;
                                 }
                                 break;
                         }
@@ -216,6 +235,13 @@ namespace Proyecto2
                         else if (token.Equals("="))
                         {
                             verificarToken(token, fila, columna, "IGUAL", estadoInicial);
+                            columna++;
+                            token = "";
+                            estado = 0;
+                        }
+                        else if (token.Equals("/"))
+                        {
+                            verificarToken(token, fila, columna, "DIAGONAL", estadoInicial);
                             columna++;
                             token = "";
                             estado = 0;
@@ -323,19 +349,6 @@ namespace Proyecto2
                         verificarToken(Char.ToString(cadena), fila, columna, "OP +", estadoInicial);
                         columna++;
                         break;
-                    case 10:
-                        if (cadena != '/')
-                        {
-                            columna++;
-                            token += cadena;
-                            estado = 10;
-                        }
-                        else if (cadena == '/')
-                        {
-                            estadoInicial = estadoInicial - 1;
-                            estado = 11;
-                        }
-                        break;
                     case 11:
                         columna++;
                         verificarToken(token+"/", fila, columna, "COMENTARIO", estadoInicial);
@@ -343,10 +356,23 @@ namespace Proyecto2
                         token = "";
                         estado = 0;
                         break;
+                    case 12:
+                        columna++;
+                        reportarError(token, fila, columna, "ERROR LEXICO", estadoInicial);
+                        columna++;
+                        contErroLexico++;
+                        estado = 0;
+                        break;
                 }
 
             }
         }
+
+        private void reportarError(string token, int fila, int columna, string tipo, int posicion)
+        {
+            Console.WriteLine(token);
+        }
+
         private void analizarReservada(string token, int fila, int columna, string tipo, int posicion) {
             bool correcta = false;
             string comparaPalabra = "";
@@ -378,9 +404,18 @@ namespace Proyecto2
             }
             else if (tipo.Equals("RESERVADA"))
             {
-                listaToken.Add(new Token(no, 30, token, tipo, fila, columna, posicion));
-                listId.Add(30);
-                no++;
+                if (token.ToLower().Equals("linea_en_blanco"))
+                {
+                    listaToken.Add(new Token(no, 30, token, tipo, fila, columna, posicion));
+                    listId.Add(190);
+                    no++;
+                }
+                else {
+                    listaToken.Add(new Token(no, 30, token, tipo, fila, columna, posicion));
+                    listId.Add(30);
+                    no++;
+                }
+               
             }
             else if (tipo.Equals("PARENTESIS APERTURA"))
             {
@@ -464,6 +499,12 @@ namespace Proyecto2
             {
                 listaToken.Add(new Token(no, 170, token, tipo, fila, columna, posicion));
                 listId.Add(170);
+                no++;
+            }
+            else if (tipo.Equals("DIAGONAL"))
+            {
+                listaToken.Add(new Token(no, 180, token, tipo, fila, columna, posicion));
+                listId.Add(180);
                 no++;
             }
         }
