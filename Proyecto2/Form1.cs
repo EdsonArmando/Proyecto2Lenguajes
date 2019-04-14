@@ -19,6 +19,7 @@ namespace Proyecto2
     public partial class Form1 : Form
     {
         AnalizadorSintactico an = new AnalizadorSintactico();
+        GenerarDocumento generar = new GenerarDocumento();
         private string textAnalizar;
         public static ArrayList listaToken = new ArrayList();
         public static ArrayList listaErrores = new ArrayList();
@@ -27,7 +28,7 @@ namespace Proyecto2
         private int contErrorSintactico;
         private int contErroLexico = 0;
         public static int contError = 1;
-        private string[] palabras = { "INSTRUCCIONES","VARIABLES","TEXTO", "Interlineado", "Nombre_archivo" ,"tamanio_letra","direccion_archivo","imagen","Numeros", "Linea_en_blanco","var","promedio"
+        private string[] palabras = { "instrucciones","VARIABLES","TEXTO", "interlineado", "Nombre_archivo" ,"tamanio_letra","direccion_archivo","imagen","Numeros", "Linea_en_blanco","var","promedio"
         ,"suma","asignar","Cadena","Entero"};
         public List<int> ListaToken { get => listId; set => listId = value; }
         public Form1()
@@ -46,10 +47,11 @@ namespace Proyecto2
             if (contErrorSintactico > 0) {
                 MessageBox.Show("Hay errores sintacticos");
             }
-            generarPDF();
-            generarPdfErrores();
+            //generarPDF();
+            //generarPdfErrores();
             an.limpiarVariables();
             listId.Clear();
+            generar.generarPdf(idTexto.Text);
         }
         private void analizadorLexico() {
             textAnalizar = idTexto.Text;
@@ -709,6 +711,7 @@ namespace Proyecto2
         public static int devolverFila(int pos)
         {
             int fila = 0;
+            pos = pos - 1;
             Token t = (Token)listaToken[pos];
            fila = t.Fila;
             return fila;
@@ -716,6 +719,7 @@ namespace Proyecto2
         public static int devolverColumna(int pos)
         {
             int fila = 0;
+            pos = pos - 1;
             Token t = (Token)listaToken[pos];
             fila = t.Columna;
             return fila;

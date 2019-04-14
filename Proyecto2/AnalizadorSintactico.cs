@@ -22,7 +22,9 @@ namespace Proyecto2
             {
                 if (cont < listaToken.Count)
                 {
+
                     preanalisis = nextToken();
+
                 }
                 else {
                     Console.WriteLine("Se termino el analisis");
@@ -31,12 +33,13 @@ namespace Proyecto2
             }
             else {
                 reportarError();
+               
             }
         }
 
         private void reportarError()
         {
-            
+            Console.WriteLine("Error");
             listaErrores.Add(new ErrorToken(contError, devolverToken(preanalisis), "ERROR Sintactico", "ERROR DE SINTAXIS", Form1.devolverFila(cont), Form1.devolverColumna(cont),0));
             contErrorSintactico++;
             contError++;
@@ -130,7 +133,7 @@ namespace Proyecto2
             switch (preanalisis) {
                 case 30:
                     parea(30);
-                    instrs();
+                     instrs();
                     bloqueInstrs();
                     break;
             }
@@ -195,7 +198,7 @@ namespace Proyecto2
                     bloque();
                     break;
                 default:
-
+                   
                     break;
             }
         }
