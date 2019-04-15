@@ -13,7 +13,7 @@ namespace Proyecto2
     {
         private string interlineado="",nombreArchivo="",tamanioletra="",dirArchivo="";
         private string path = "", tamaniox = "", tmanioy = "";
-        private string textoNegrita = "",textoSubrayado="";
+        private string textoNegrita = "",textoSubrayado="",cadena="";
         private string variable = "", valor = "";
         private string var = "";
         private int opcion=0;
@@ -72,6 +72,10 @@ namespace Proyecto2
                                 break;
                             case "linea_en_blanco;":
                                 opcion = 0;
+                                palabra = "";
+                                break;
+                            case "\"":
+                                opcion = 10;
                                 palabra = "";
                                 break;
                         }
@@ -262,6 +266,23 @@ namespace Proyecto2
                             }
                         }
                         break;
+                        case 10:
+                        if (letra == ';')
+                        {
+                            palabra = "";
+                            opcion = 0;
+
+                            cadena = "";
+                        }
+                        else if (letra == '+' | letra == ']')
+                        {
+
+                        }
+                        else
+                        {
+                            //cadena += letra;
+                        }
+                        break;
                 }         
             }
         }
@@ -331,6 +352,10 @@ namespace Proyecto2
                             case "linea_en_blanco;":
                                 opcion = 0;
                                 para1.Add(Chunk.NEWLINE);
+                                palabra = "";
+                                break;
+                            case "\"":
+                                opcion = 10;
                                 palabra = "";
                                 break;
                         }
@@ -520,6 +545,23 @@ namespace Proyecto2
                             {
                                 variable += letra;
                             }
+                        }
+                        break;
+                    case 10:
+                        if (letra == '"')
+                        {
+                            palabra = "";
+                            opcion = 0;
+                            para1.Add(new Chunk(cadena, _standardFont));
+                            cadena = "";
+                        }
+                        else if (letra == '"')
+                        {
+
+                        }
+                        else
+                        {
+                            cadena += letra;
                         }
                         break;
                 }
