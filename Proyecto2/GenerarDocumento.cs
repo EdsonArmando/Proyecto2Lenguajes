@@ -1,5 +1,8 @@
-﻿using System;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,8 +77,8 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                            Console.WriteLine(interlineado);
-                            interlineado = "";
+                        
+                            //interlineado = "";
                         }
                         else if (letra == '(' | letra == ')')
                         {
@@ -91,7 +94,7 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             Console.WriteLine(nombreArchivo);
-                            nombreArchivo = "";
+                         
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
                         {
@@ -107,8 +110,8 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                            Console.WriteLine(tamanioletra);
-                            tamanioletra = "";
+                            //Console.WriteLine(tamanioletra);
+                            //tamanioletra = "";
                         }
                         else if (letra == '(' | letra == ')')
                         {
@@ -125,7 +128,7 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             Console.WriteLine(dirArchivo);
-                            dirArchivo = "";
+                            
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
                         {
@@ -176,7 +179,7 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             Console.WriteLine(textoNegrita);
-                            textoNegrita = "";
+                            //textoNegrita = "";
                         }
                         else if (letra == '+' | letra == ']')
                         {
@@ -193,7 +196,7 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             Console.WriteLine(textoSubrayado);
-                            textoSubrayado = "";
+                            //textoSubrayado = "";
                         }
                         else if (letra == '*' | letra == ']')
                         {
@@ -254,6 +257,28 @@ namespace Proyecto2
                         break;
                 }         
             }
+        }
+        public void documento() {
+            Document doc = new Document();
+            PdfWriter writer = PdfWriter.GetInstance(doc,
+                           new FileStream(Path.Combine(dirArchivo, nombreArchivo), FileMode.Create));
+            doc.Open();
+            Paragraph para1 = new Paragraph(Convert.ToSingle(Convert.ToDecimal(interlineado)) * 16);
+            iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA,Convert.ToInt32(tamanioletra));
+            iTextSharp.text.Font negrita = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, Convert.ToInt32(tamanioletra), iTextSharp.text.Font.BOLD);
+            iTextSharp.text.Font subrayado = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, Convert.ToInt32(tamanioletra), iTextSharp.text.Font.DEFAULTSIZE);
+            para1.Add(new Chunk(textoNegrita, negrita));
+            para1.Add(new Chunk(textoSubrayado, subrayado));
+            doc.Add(new Paragraph("Universidad de San Carlos de Guatemala", _standardFont));
+            doc.Add(para1);
+            doc.Close();
+            writer.Close();
+            dirArchivo = "";
+            nombreArchivo = "";
+            textoSubrayado = "";
+            textoNegrita = "";
+            interlineado = "";
+            tamanioletra = "";
         }
          
     }

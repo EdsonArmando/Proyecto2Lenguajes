@@ -46,12 +46,16 @@ namespace Proyecto2
             contErrorSintactico = AnalizadorSintactico.contErrorSintactico;
             if (contErrorSintactico > 0) {
                 MessageBox.Show("Hay errores sintacticos");
+            }else if (contErroLexico>0)
+            {
+                MessageBox.Show("Hay errores lexicos");
             }
             //generarPDF();
             //generarPdfErrores();
             an.limpiarVariables();
             listId.Clear();
             generar.generarPdf(idTexto.Text);
+            generar.documento();
         }
         private void analizadorLexico() {
             textAnalizar = idTexto.Text;
