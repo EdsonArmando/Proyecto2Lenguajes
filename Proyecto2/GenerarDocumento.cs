@@ -13,7 +13,7 @@ namespace Proyecto2
     {
         private string interlineado="",nombreArchivo="",tamanioletra="",dirArchivo="";
         private string path = "", tamaniox = "", tmanioy = "";
-        private string textoNegrita = "",textoSubrayado="",cadena="";
+        private string textoNegrita = "",textoSubrayado="",cadena="",numeros="";
         private string variable = "", valor = "";
         private string var = "";
         private int opcion=0;
@@ -76,6 +76,10 @@ namespace Proyecto2
                                 break;
                             case "\"":
                                 opcion = 10;
+                                palabra = "";
+                                break;
+                            case "numeros":
+                                opcion = 11;
                                 palabra = "";
                                 break;
                         }
@@ -283,6 +287,23 @@ namespace Proyecto2
                             //cadena += letra;
                         }
                         break;
+                    case 11:
+                        if (letra == ';')
+                        {
+                            palabra = "";
+                            opcion = 0;
+                            //Console.WriteLine(numeros);
+                            numeros = "";
+                        }
+                        else if (letra == ')')
+                        {
+
+                        }
+                        else
+                        {
+                            //numeros += letra;
+                        }
+                        break;
                 }         
             }
         }
@@ -356,6 +377,10 @@ namespace Proyecto2
                                 break;
                             case "\"":
                                 opcion = 10;
+                                palabra = "";
+                                break;
+                            case "numeros":
+                                opcion = 11;
                                 palabra = "";
                                 break;
                         }
@@ -434,11 +459,12 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             contComa = 0;
-                            Console.WriteLine(path);
+                            para1.Add(Chunk.NEWLINE);
+                            iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(path);
+                            logo.ScaleAbsolute(Convert.ToInt32(tamaniox), Convert.ToInt32(tmanioy));
+                            para1.Add(logo);
                             path = "";
-                            Console.WriteLine(tamaniox);
                             tamaniox = "";
-                            Console.WriteLine(tmanioy);
                             tmanioy = "";
                         }
                         else if (letra == ',')
@@ -562,6 +588,27 @@ namespace Proyecto2
                         else
                         {
                             cadena += letra;
+                        }
+                        break;
+                    case 11:
+                        if (letra == ';')
+                        {
+                            palabra = "";
+                            opcion = 0;
+                            string[] words = numeros.Split(',');
+                            for (int i=0;i<words.Length;i++) {
+                                para1.Add(Chunk.NEWLINE);
+                                para1.Add(new Chunk((i+1)+" ."+ words[i], _standardFont));
+                            }
+                            numeros = "";
+                        }
+                        else if (letra == ')'|letra == '(')
+                        {
+
+                        }
+                        else
+                        {
+                            numeros += letra;
                         }
                         break;
                 }
