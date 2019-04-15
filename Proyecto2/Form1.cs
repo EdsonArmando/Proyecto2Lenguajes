@@ -55,7 +55,7 @@ namespace Proyecto2
             an.limpiarVariables();
             listId.Clear();
             generar.generarPdf(idTexto.Text);
-            generar.documento();
+            generar.documento(idTexto.Text);
         }
         private void analizadorLexico() {
             textAnalizar = idTexto.Text;
