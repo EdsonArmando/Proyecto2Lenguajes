@@ -15,6 +15,7 @@ namespace Proyecto2
         private string path = "", tamaniox = "", tmanioy = "";
         private string textoNegrita = "",textoSubrayado="",cadena="",numeros="";
         private string variable = "", valor = "";
+        private string variables = "";
         private string var = "";
         private int opcion=0;
         private int contComa=0;
@@ -26,9 +27,12 @@ namespace Proyecto2
             for (inicio=0;inicio<texto.Length;inicio++) {
                 letra = texto[inicio];
                 palabra += letra;
-                 if (palabra.Equals("\n") || palabra.Equals("\r") || palabra.Equals("\t") || palabra.Equals("\f") || palabra.Equals(" ") || palabra.Equals("{")
-                    || palabra.Equals("}") || palabra.Equals("instrucciones") || palabra.ToLower().Equals("texto"))
+                if (palabra.Equals("\n") || palabra.Equals("\r") || palabra.Equals("\t") || palabra.Equals("\f") || palabra.Equals(" ") || palabra.Equals("{")
+                   || palabra.Equals("}") || palabra.Equals("instrucciones") || palabra.ToLower().Equals("texto"))
                 {
+                    palabra = "";
+                } else if (palabra.ToLower().Equals("iables")) {
+                    opcion = 12;
                     palabra = "";
                 }
                 switch (opcion) {
@@ -105,7 +109,7 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                            Console.WriteLine(nombreArchivo);
+                            //Console.WriteLine(nombreArchivo);
                          
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
@@ -139,7 +143,7 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                            Console.WriteLine(dirArchivo);
+                            //Console.WriteLine(dirArchivo);
                             
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
@@ -157,11 +161,11 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             contComa = 0;
-                            Console.WriteLine(path);
+                            //Console.WriteLine(path);
                             path = "";
-                            Console.WriteLine(tamaniox);
+                            //Console.WriteLine(tamaniox);
                             tamaniox = "";
-                            Console.WriteLine(tmanioy);
+                            //Console.WriteLine(tmanioy);
                             tmanioy = "";
                         }
                         else if (letra == ',')
@@ -227,7 +231,7 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                            Console.WriteLine(var);
+                            //Console.WriteLine(var);
                             var = "";
                         }
                         else if (letra == '[')
@@ -245,9 +249,9 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             contComa = 0;
-                            Console.WriteLine(variable);
+                            //Console.WriteLine(variable);
                             variable = "";
-                            Console.WriteLine(valor);
+                            //Console.WriteLine(valor);
                             valor = "";
                         }
                         else if (letra == ',')
@@ -304,6 +308,19 @@ namespace Proyecto2
                             //numeros += letra;
                         }
                         break;
+                    case 12:
+                        if (letra == ';')
+                        {
+                            variables = palabra;
+                            Console.WriteLine(variables);
+                            variables = "";
+                            palabra = "";
+                        }
+                        else if (letra == '}')
+                        {
+                            opcion = 0;
+                        }
+                        break;
                 }         
             }
         }
@@ -327,6 +344,11 @@ namespace Proyecto2
                 if (palabra.Equals("\n") || palabra.Equals("\r") || palabra.Equals("\t") || palabra.Equals("\f") || palabra.Equals(" ") || palabra.Equals("{")
                    || palabra.Equals("}") || palabra.Equals("instrucciones") || palabra.ToLower().Equals("texto"))
                 {
+                    palabra = "";
+                }
+                else if (palabra.ToLower().Equals("iables"))
+                {
+                    opcion = 12;
                     palabra = "";
                 }
                 switch (opcion)
@@ -382,7 +404,7 @@ namespace Proyecto2
                             case "numeros":
                                 opcion = 11;
                                 palabra = "";
-                                break;
+                                break;                           
                         }
                         break;
                     case 1:
@@ -407,7 +429,7 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                            Console.WriteLine(nombreArchivo);
+                            //Console.WriteLine(nombreArchivo);
 
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
@@ -441,7 +463,7 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                            Console.WriteLine(dirArchivo);
+                            //Console.WriteLine(dirArchivo);
 
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
@@ -530,7 +552,7 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                            Console.WriteLine(var);
+                            //Console.WriteLine(var);
                             var = "";
                         }
                         else if (letra == '[')
@@ -548,9 +570,9 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             contComa = 0;
-                            Console.WriteLine(variable);
+                            //Console.WriteLine(variable);
                             variable = "";
-                            Console.WriteLine(valor);
+                            //Console.WriteLine(valor);
                             valor = "";
                         }
                         else if (letra == ',')
@@ -598,17 +620,27 @@ namespace Proyecto2
                             string[] words = numeros.Split(',');
                             for (int i=0;i<words.Length;i++) {
                                 para1.Add(Chunk.NEWLINE);
-                                para1.Add(new Chunk((i+1)+" ."+ words[i], _standardFont));
+                                para1.Add(new Chunk((i+1)+". "+ words[i], _standardFont));
                             }
                             numeros = "";
                         }
-                        else if (letra == ')'|letra == '(')
+                        else if (letra == ')'|letra == '('| letra == '"')
                         {
 
                         }
                         else
                         {
                             numeros += letra;
+                        }
+                        break;
+                    case 12:
+                        if (letra == ';')
+                        {
+                            //variables = palabra;
+                            //variables = "";
+                            palabra = "";
+                        } else if (letra == '}') {
+                            opcion = 0;
                         }
                         break;
                 }
