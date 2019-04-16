@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 namespace Proyecto2
 {
     class GenerarDocumento
-    {
+    {   
         private string interlineado="",nombreArchivo="",tamanioletra="",dirArchivo="";
         private string path = "", tamaniox = "", tmanioy = "";
         private string textoNegrita = "",textoSubrayado="",cadena="",numeros="";
         private string variable = "", valor = "";
         private string variables = "";
+        private string varia = "",tipo="",valors="";
+        private int contVariable;
         private string var = "";
         private int opcion=0;
         private int contComa=0;
@@ -31,9 +33,16 @@ namespace Proyecto2
                    || palabra.Equals("}") || palabra.Equals("instrucciones") || palabra.ToLower().Equals("texto"))
                 {
                     palabra = "";
-                } else if (palabra.ToLower().Equals("iables")) {
+                } else if (palabra.ToLower().Equals("iables") ) {
                     opcion = 12;
                     palabra = "";
+                    letra = ' ';
+                }
+                else if (palabra.ToLower().Equals("texto"))
+                {
+                    
+                    palabra = "";
+                    Console.WriteLine("Hola");
                 }
                 switch (opcion) {
                     case 0:
@@ -98,7 +107,7 @@ namespace Proyecto2
                         }
                         else if (letra == '(' | letra == ')')
                         {
-                            
+                            palabra = "";
                         }
                         else {
                             interlineado += letra;
@@ -114,7 +123,7 @@ namespace Proyecto2
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
                         {
-
+                            palabra = "";
                         }
                         else
                         {
@@ -131,7 +140,7 @@ namespace Proyecto2
                         }
                         else if (letra == '(' | letra == ')')
                         {
-
+                            palabra = "";
                         }
                         else
                         {
@@ -148,7 +157,7 @@ namespace Proyecto2
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
                         {
-
+                            palabra = "";
                         }
                         else
                         {
@@ -275,12 +284,12 @@ namespace Proyecto2
                         }
                         break;
                         case 10:
-                        if (letra == ';')
+                        if (letra == '"')
                         {
                             palabra = "";
                             opcion = 0;
 
-                            cadena = "";
+                           
                         }
                         else if (letra == '+' | letra == ']')
                         {
@@ -309,16 +318,61 @@ namespace Proyecto2
                         }
                         break;
                     case 12:
-                        if (letra == ';')
+                       if (letra == ':')
                         {
-                            variables = palabra;
-                            Console.WriteLine(variables);
-                            variables = "";
+                            if (contVariable == 0) {
+                                Console.WriteLine(varia);
+                                palabra = "";
+                                opcion = 12;
+                                varia = "";
+                                contVariable = 1;
+                            } 
+                    
+                        } else if (letra == '=') {
+                            if (contVariable == 1)
+                            {
+                                Console.WriteLine(tipo);
+                                palabra = "";
+                                opcion = 12;
+                                tipo = "";
+                                contVariable = 2;
+                            }
+                        }
+                        else if (letra == ';')
+                        {
+                            if (contVariable == 2)
+                            {
+                                Console.WriteLine(valors);
+                                palabra = "";
+                                opcion = 12;
+                                valors = "";
+                                contVariable = 0;
+                            } else if (contVariable == 1) {
+                                Console.WriteLine(tipo);
+                                palabra = "";
+                                opcion = 12;
+                                tipo = "";
+                                contVariable = 0;
+                            }
+                        }
+                        else if (letra == ':' || letra == ' ' || letra == '\n' || letra == '\t' || letra == '\r' || letra == '{' || letra == '=')
+                        {
                             palabra = "";
                         }
                         else if (letra == '}')
                         {
                             opcion = 0;
+                        }
+                        else {
+                            if (contVariable == 0) {
+                                varia += letra;
+                            } else if (contVariable == 1) {
+                                tipo += letra;
+                            }
+                            else if (contVariable == 2)
+                            {
+                                valors += letra;
+                            }
                         }
                         break;
                 }         
@@ -341,6 +395,7 @@ namespace Proyecto2
             {
                 letra = texto[inicio];
                 palabra += letra;
+               
                 if (palabra.Equals("\n") || palabra.Equals("\r") || palabra.Equals("\t") || palabra.Equals("\f") || palabra.Equals(" ") || palabra.Equals("{")
                    || palabra.Equals("}") || palabra.Equals("instrucciones") || palabra.ToLower().Equals("texto"))
                 {
@@ -350,6 +405,13 @@ namespace Proyecto2
                 {
                     opcion = 12;
                     palabra = "";
+                    letra = ' ';
+                }
+                else if (palabra.ToLower().Equals("texto"))
+                {
+
+                    palabra = "";
+                   
                 }
                 switch (opcion)
                 {
@@ -404,7 +466,8 @@ namespace Proyecto2
                             case "numeros":
                                 opcion = 11;
                                 palabra = "";
-                                break;                           
+                                break;
+                           
                         }
                         break;
                     case 1:
@@ -634,13 +697,70 @@ namespace Proyecto2
                         }
                         break;
                     case 12:
-                        if (letra == ';')
+                        if (letra == ':')
                         {
-                            //variables = palabra;
-                            //variables = "";
-                            palabra = "";
-                        } else if (letra == '}') {
+                            if (contVariable == 0)
+                            {
+                                //Console.WriteLine(varia);
+                                palabra = "";
+                                opcion = 12;
+                                varia = "";
+                                contVariable = 1;
+                            }
+
+                        }
+                        else if (letra == '=')
+                        {
+                            if (contVariable == 1)
+                            {
+                                //Console.WriteLine(tipo);
+                                palabra = "";
+                                opcion = 12;
+                                tipo = "";
+                                contVariable = 2;
+                            }
+                        }
+                        else if (letra == ';')
+                        {
+                            if (contVariable == 2)
+                            {
+                                //Console.WriteLine(valors);
+                                palabra = "";
+                                opcion = 12;
+                                valors = "";
+                                contVariable = 0;
+                            }
+                            else if (contVariable == 1)
+                            {
+                                //Console.WriteLine(tipo);
+                                palabra = "";
+                                opcion = 12;
+                                tipo = "";
+                                contVariable = 0;
+                            }
+                        }
+                        else if (letra == ':' || letra == ' ' || letra == '\n' || letra == '\t' || letra == '\r' || letra == '{' || letra == '=')
+                        {
+
+                        }
+                        else if (letra == '}')
+                        {
                             opcion = 0;
+                        }
+                        else
+                        {
+                            if (contVariable == 0)
+                            {
+                                //varia += letra;
+                            }
+                            else if (contVariable == 1)
+                            {
+                                //tipo += letra;
+                            }
+                            else if (contVariable == 2)
+                            {
+                                //valors += letra;
+                            }
                         }
                         break;
                 }
