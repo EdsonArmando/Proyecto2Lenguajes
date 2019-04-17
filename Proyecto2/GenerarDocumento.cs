@@ -1,6 +1,7 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,6 +22,9 @@ namespace Proyecto2
         private string var = "";
         private int opcion=0;
         private int contComa=0;
+        private string suma = "",promedio="";
+        private Paragraph para1;
+        private ArrayList variabl = new ArrayList();
 
         public void generarPdf(string texto) {
             int inicio;
@@ -33,7 +37,7 @@ namespace Proyecto2
                    || palabra.Equals("}") || palabra.Equals("instrucciones") || palabra.ToLower().Equals("texto"))
                 {
                     palabra = "";
-                } else if (palabra.ToLower().Equals("iables") ) {
+                } else if (palabra.ToLower().Equals("variables") ) {
                     opcion = 12;
                     palabra = "";
                     letra = ' ';
@@ -42,7 +46,7 @@ namespace Proyecto2
                 {
                     
                     palabra = "";
-                    Console.WriteLine("Hola");
+                
                 }
                 switch (opcion) {
                     case 0:
@@ -75,7 +79,7 @@ namespace Proyecto2
                                 opcion = 7;
                                 palabra = "";
                                 break;
-                            case "var":
+                            case "var[":
                                 opcion = 8;
                                 palabra = "";
                                 break;
@@ -93,6 +97,14 @@ namespace Proyecto2
                                 break;
                             case "numeros":
                                 opcion = 11;
+                                palabra = "";
+                                break;
+                            case "suma":
+                                opcion = 13;
+                                palabra = "";
+                                break;
+                            case "promedio":
+                                opcion = 13;
                                 palabra = "";
                                 break;
                         }
@@ -321,20 +333,20 @@ namespace Proyecto2
                        if (letra == ':')
                         {
                             if (contVariable == 0) {
-                                Console.WriteLine(varia);
+                                //Console.WriteLine(varia);
                                 palabra = "";
                                 opcion = 12;
-                                varia = "";
+                               
                                 contVariable = 1;
                             } 
                     
                         } else if (letra == '=') {
                             if (contVariable == 1)
                             {
-                                Console.WriteLine(tipo);
+                                //Console.WriteLine(tipo);
                                 palabra = "";
                                 opcion = 12;
-                                tipo = "";
+                          
                                 contVariable = 2;
                             }
                         }
@@ -342,16 +354,32 @@ namespace Proyecto2
                         {
                             if (contVariable == 2)
                             {
-                                Console.WriteLine(valors);
+                                //Console.WriteLine(valors);
+                                string[] words = varia.Split(',');
+                                for (int i = 0; i < words.Length; i++)
+                                {
+                                    Console.WriteLine(words[i] +" "+ tipo + " " + valors);
+                                    variabl.Add(new Variable(words[i], tipo, valors));
+                                }
+                                varia = "";
+                                tipo = "";
                                 palabra = "";
                                 opcion = 12;
                                 valors = "";
                                 contVariable = 0;
                             } else if (contVariable == 1) {
-                                Console.WriteLine(tipo);
+                                //Console.WriteLine(tipo);
+                                string[] words = varia.Split(',');
+                                for (int i = 0; i < words.Length; i++)
+                                {
+                                    variabl.Add(new Variable(words[i], tipo, valors));
+                                }
+                                varia = "";
+                                tipo = "";
+                                valors = "";
                                 palabra = "";
                                 opcion = 12;
-                                tipo = "";
+                        
                                 contVariable = 0;
                             }
                         }
@@ -362,6 +390,7 @@ namespace Proyecto2
                         else if (letra == '}')
                         {
                             opcion = 0;
+                            palabra = "";
                         }
                         else {
                             if (contVariable == 0) {
@@ -375,11 +404,44 @@ namespace Proyecto2
                             }
                         }
                         break;
+                    case 13:
+                        if (letra == ';')
+                        {
+                            palabra = "";
+                            opcion = 0;
+                            //Console.WriteLine(numeros);
+                            suma = "";
+                        }
+                        else if (letra == ')')
+                        {
+
+                        }
+                        else
+                        {
+                            //numeros += letra;
+                        }
+                        break;
+                    case 14:
+                        if (letra == ';')
+                        {
+                            palabra = "";
+                            opcion = 0;
+                            //Console.WriteLine(numeros);
+                            promedio = "";
+                        }
+                        else if (letra == ')')
+                        {
+
+                        }
+                        else
+                        {
+                            //numeros += letra;
+                        }
+                        break;
                 }         
             }
         }
         public void documento(string texto) {
-            Console.WriteLine(path);
             int inicio;
             char letra;
             string palabra = "";
@@ -387,7 +449,7 @@ namespace Proyecto2
             PdfWriter writer = PdfWriter.GetInstance(doc,
                            new FileStream(Path.Combine(dirArchivo, nombreArchivo), FileMode.Create));
             doc.Open();
-            Paragraph para1 = new Paragraph(Convert.ToSingle(Convert.ToDecimal(interlineado)) * 16);
+            para1 = new Paragraph(Convert.ToSingle(Convert.ToDecimal(interlineado)) * 16);
             iTextSharp.text.Font _standardFont = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, Convert.ToInt32(tamanioletra));
             iTextSharp.text.Font negrita = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, Convert.ToInt32(tamanioletra), iTextSharp.text.Font.BOLD);
             iTextSharp.text.Font subrayado = new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, Convert.ToInt32(tamanioletra), iTextSharp.text.Font.DEFAULTSIZE);
@@ -401,7 +463,7 @@ namespace Proyecto2
                 {
                     palabra = "";
                 }
-                else if (palabra.ToLower().Equals("iables"))
+                else if (palabra.ToLower().Equals("variables"))
                 {
                     opcion = 12;
                     palabra = "";
@@ -446,7 +508,7 @@ namespace Proyecto2
                                 opcion = 7;
                                 palabra = "";
                                 break;
-                            case "var":
+                            case "var[":
                                 opcion = 8;
                                 palabra = "";
                                 break;
@@ -467,7 +529,14 @@ namespace Proyecto2
                                 opcion = 11;
                                 palabra = "";
                                 break;
-                           
+                            case "suma":
+                                opcion = 13;
+                                palabra = "";
+                                break;
+                            case "promedio":
+                                opcion = 14;
+                                palabra = "";
+                                break;
                         }
                         break;
                     case 1:
@@ -615,10 +684,18 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
+                            string vs = "";
                             //Console.WriteLine(var);
+                            foreach (Variable v in variabl) {
+                                if (v.Nombre.Equals(var)) {
+                                    vs = v.Valor;
+                                }
+                            }
+                            para1.Add(new Chunk(vs, _standardFont));
                             var = "";
+                            vs = "";
                         }
-                        else if (letra == '[')
+                        else if (letra == '['| letra == ' ')
                         {
 
                         }
@@ -633,6 +710,13 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             contComa = 0;
+                            foreach (Variable v in variabl)
+                            {
+                                if (v.Nombre.Equals(variable))
+                                {
+                                    v.Valor = valor;
+                                }
+                            }
                             //Console.WriteLine(variable);
                             variable = "";
                             //Console.WriteLine(valor);
@@ -704,7 +788,7 @@ namespace Proyecto2
                                 //Console.WriteLine(varia);
                                 palabra = "";
                                 opcion = 12;
-                                varia = "";
+
                                 contVariable = 1;
                             }
 
@@ -716,7 +800,7 @@ namespace Proyecto2
                                 //Console.WriteLine(tipo);
                                 palabra = "";
                                 opcion = 12;
-                                tipo = "";
+
                                 contVariable = 2;
                             }
                         }
@@ -725,6 +809,9 @@ namespace Proyecto2
                             if (contVariable == 2)
                             {
                                 //Console.WriteLine(valors);
+                              
+                                varia = "";
+                                tipo = "";
                                 palabra = "";
                                 opcion = 12;
                                 valors = "";
@@ -733,19 +820,24 @@ namespace Proyecto2
                             else if (contVariable == 1)
                             {
                                 //Console.WriteLine(tipo);
+                                
+                                varia = "";
+                                tipo = "";
+                                valors = "";
                                 palabra = "";
                                 opcion = 12;
-                                tipo = "";
+
                                 contVariable = 0;
                             }
                         }
                         else if (letra == ':' || letra == ' ' || letra == '\n' || letra == '\t' || letra == '\r' || letra == '{' || letra == '=')
                         {
-
+                            palabra = "";
                         }
                         else if (letra == '}')
                         {
                             opcion = 0;
+                            palabra = "";
                         }
                         else
                         {
@@ -763,6 +855,84 @@ namespace Proyecto2
                             }
                         }
                         break;
+                    case 13:
+                        if (letra == ';')
+                        {
+                            palabra = "";
+                            opcion = 0;
+                            string[] words = suma.Split(',');
+                            long sumatoria =0;
+                            for (int i = 0; i < words.Length; i++)
+                            {
+                                if (esEntero(words[i]) == true)
+                                {
+                                    sumatoria += Convert.ToInt32(words[i]);
+                                }
+                                else {
+                                    foreach (Variable v in variabl)
+                                    {
+                                        if (v.Nombre.Equals(words[i]))
+                                        {
+                                            sumatoria += Convert.ToInt32(v.Valor);
+                                        }
+                                    }
+                                }
+                               
+                            }
+                            para1.Add(Chunk.NEWLINE);
+                            para1.Add(new Chunk(Convert.ToString(sumatoria), _standardFont));
+                            suma = "";
+                            sumatoria = 0;
+                        }
+                        else if (letra == ')' | letra == '(' | letra == '"')
+                        {
+
+                        }
+                        else
+                        {
+                            suma += letra;
+                        }
+                        break;
+                    case 14:
+                        if (letra == ';')
+                        {
+                            palabra = "";
+                            opcion = 0;
+                            string[] words = promedio.Split(',');
+                            long sumatoria = 0;
+                            for (int i = 0; i < words.Length; i++)
+                            {
+                                if (esEntero(words[i]) == true)
+                                {
+                                    sumatoria += Convert.ToInt32(words[i]);
+                                }
+                                else
+                                {
+                                    foreach (Variable v in variabl)
+                                    {
+                                        if (v.Nombre.Equals(words[i]))
+                                        {
+                                            sumatoria += Convert.ToInt32(v.Valor);
+                                        }
+                                    }
+                                }
+
+                            }
+                            sumatoria = sumatoria / words.Length;
+                            para1.Add(Chunk.NEWLINE);
+                            para1.Add(new Chunk(Convert.ToString(sumatoria), _standardFont));
+                            promedio = "";
+                            sumatoria = 0;
+                        }
+                        else if (letra == ')' | letra == '(' | letra == '"')
+                        {
+
+                        }
+                        else
+                        {
+                            promedio += letra;
+                        }
+                        break;
                 }
             }
             doc.Add(para1);
@@ -773,8 +943,14 @@ namespace Proyecto2
             interlineado = "";
             tamanioletra = "";
         }
-         
+        private bool  esEntero(string valor)
+        {
+            long number1 = 0;
+            bool canConvert = long.TryParse(valor, out number1);
+            return canConvert;
+        }
     }
+  
 }
 
 
