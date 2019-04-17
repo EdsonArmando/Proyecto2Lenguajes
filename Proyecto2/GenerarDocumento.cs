@@ -23,6 +23,7 @@ namespace Proyecto2
         private int opcion=0;
         private int contComa=0;
         private string suma = "",promedio="";
+        private string comentario = "";
         private Paragraph para1;
         private ArrayList variabl = new ArrayList();
 
@@ -104,7 +105,11 @@ namespace Proyecto2
                                 palabra = "";
                                 break;
                             case "promedio":
-                                opcion = 13;
+                                opcion = 14;
+                                palabra = "";
+                                break;
+                            case "/*":
+                                opcion = 15;
                                 palabra = "";
                                 break;
                         }
@@ -438,6 +443,24 @@ namespace Proyecto2
                             //numeros += letra;
                         }
                         break;
+                    case 15:
+                        if (letra == '/')
+                        {
+                            palabra = "";
+                            opcion = 0;
+                           
+                            comentario = "";
+                        }
+                        else if (letra == '"')
+                        {
+
+                        }
+                        else
+                        {
+                            //comentario += letra;
+                        }
+                        break;
+
                 }         
             }
         }
@@ -535,6 +558,10 @@ namespace Proyecto2
                                 break;
                             case "promedio":
                                 opcion = 14;
+                                palabra = "";
+                                break;
+                            case "/*":
+                                opcion = 15;
                                 palabra = "";
                                 break;
                         }
@@ -931,6 +958,23 @@ namespace Proyecto2
                         else
                         {
                             promedio += letra;
+                        }
+                        break;
+                    case 15:
+                        if (letra == '/')
+                        {
+                            palabra = "";
+                            opcion = 0;
+                            para1.Add(new Chunk("/* "+ comentario + "/", _standardFont));
+                            comentario = "";
+                        }
+                        else if (letra == '"')
+                        {
+
+                        }
+                        else
+                        {
+                            comentario += letra;
                         }
                         break;
                 }
