@@ -22,9 +22,11 @@ namespace Proyecto2
         GenerarDocumento generar = new GenerarDocumento();
         private string textAnalizar;
         public static ArrayList listaToken = new ArrayList();
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         public static ArrayList listaErrores = new ArrayList();
         public static List<int> listId = new List<int>();
         private int no = 1;
+        private string path;
         private int contErrorSintactico;
         private int contErroLexico = 0;
         public static int contError = 1;
@@ -730,6 +732,49 @@ namespace Proyecto2
             Token t = (Token)listaToken[pos];
             fila = t.Columna;
             return fila;
+        }
+
+        private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog file = new OpenFileDialog();
+            file.Filter = "ls files (*.ls)|*.ls|All files (*.*)|*.*";
+            if (file.ShowDialog() == DialogResult.OK)
+            {
+                path = file.FileName;
+                String texto = File.ReadAllText(path);
+                idTexto.Text = "\t" + texto;
+            }
+        }
+
+        private void guardarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StreamWriter archivo = new StreamWriter(path);
+            archivo.Write(idTexto.Text);
+            archivo.Close();
+            MessageBox.Show("Se ha guardado satisfactoriamente");
+        }
+
+        private void guardarComoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+
+            saveFileDialog1.Filter = "ls files (*.ls)|*.ls|All files (*.*)|*.*";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                string name = saveFileDialog1.FileName;
+                saveFileDialog1.InitialDirectory = @"c:\temp\";
+                File.WriteAllText(saveFileDialog1.FileName, idTexto.Text);
+            }
+        }
+
+        private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Nombre: Edson Armando Guix Manuel \nSección: A- \nAux. Aylin Aroche");
+        }
+
+        private void salirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }
