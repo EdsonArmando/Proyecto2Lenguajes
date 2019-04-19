@@ -44,18 +44,21 @@ namespace Proyecto2
             analizadorLexico();
             an.iniciarAnalisis();
             contErrorSintactico = AnalizadorSintactico.contErrorSintactico;
-            if (contErrorSintactico > 0) {
+            if (contErrorSintactico > 0 && contError == 1) {
                 MessageBox.Show("Hay errores sintacticos");
-            }else if (contErroLexico>0)
+            } else if (contError > 1 && contErrorSintactico == 0)
             {
                 MessageBox.Show("Hay errores lexicos");
+            } else if (contError > 1 && contErrorSintactico > 0) {
+                MessageBox.Show("Hay errores lexicos y sintacticos");
+            } else if (contError == 1 && contErrorSintactico == 0) {
+                generar.generarPdf(idTexto.Text);
+                generar.documento(idTexto.Text);
             }
-            //generarPDF();
-            //generarPdfErrores();
+            generarPDF();
+            generarPdfErrores();
             an.limpiarVariables();
             listId.Clear();
-            generar.generarPdf(idTexto.Text);
-            generar.documento(idTexto.Text);
         }
         private void analizadorLexico() {
             textAnalizar = idTexto.Text;

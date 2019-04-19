@@ -54,18 +54,22 @@ namespace Proyecto2
                         switch (palabra.ToLower()) {
                             case "interlineado":
                                 opcion = 1;
+                                interlineado = "";
                                 palabra = "";
                                 break;
                             case "nombre_archivo":
                                 opcion = 2;
+                                nombreArchivo = "";
                                 palabra = "";
                                 break;
                             case "tamanio_letra":
                                 opcion = 3;
+                                tamanioletra = "";
                                 palabra = "";
                                 break;
                             case "direccion_archivo":
                                 opcion = 4;
+                                dirArchivo = "";
                                 palabra = "";
                                 break;
                             case "imagen":
@@ -119,8 +123,6 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                        
-                            //interlineado = "";
                         }
                         else if (letra == '(' | letra == ')')
                         {
@@ -135,8 +137,8 @@ namespace Proyecto2
                         {
                             palabra = "";
                             opcion = 0;
-                            //Console.WriteLine(nombreArchivo);
-                         
+                           
+
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
                         {
@@ -154,6 +156,7 @@ namespace Proyecto2
                             opcion = 0;
                             //Console.WriteLine(tamanioletra);
                             //tamanioletra = "";
+                           
                         }
                         else if (letra == '(' | letra == ')')
                         {
@@ -171,6 +174,7 @@ namespace Proyecto2
                             opcion = 0;
                             //Console.WriteLine(dirArchivo);
                             
+
                         }
                         else if (letra == '(' | letra == ')' | letra == '"')
                         {
@@ -465,6 +469,7 @@ namespace Proyecto2
             }
         }
         public void documento(string texto) {
+  
             int inicio;
             char letra;
             string palabra = "";
@@ -926,12 +931,12 @@ namespace Proyecto2
                             palabra = "";
                             opcion = 0;
                             string[] words = promedio.Split(',');
-                            long sumatoria = 0;
+                            long sumatoria2 = 0;
                             for (int i = 0; i < words.Length; i++)
                             {
                                 if (esEntero(words[i]) == true)
                                 {
-                                    sumatoria += Convert.ToInt32(words[i]);
+                                    sumatoria2 += Convert.ToInt32(words[i]);
                                 }
                                 else
                                 {
@@ -939,17 +944,17 @@ namespace Proyecto2
                                     {
                                         if (v.Nombre.Equals(words[i]))
                                         {
-                                            sumatoria += Convert.ToInt32(v.Valor);
+                                            sumatoria2 += Convert.ToInt32(v.Valor);
                                         }
                                     }
                                 }
 
                             }
-                            sumatoria = sumatoria / words.Length;
+                            sumatoria2 = sumatoria2 / words.Length;
                             para1.Add(Chunk.NEWLINE);
-                            para1.Add(new Chunk(Convert.ToString(sumatoria), _standardFont));
+                            para1.Add(new Chunk(Convert.ToString(sumatoria2), _standardFont));
                             promedio = "";
-                            sumatoria = 0;
+                            sumatoria2 = 0;
                         }
                         else if (letra == ')' | letra == '(' | letra == '"')
                         {
